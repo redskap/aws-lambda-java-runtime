@@ -1,7 +1,11 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.bmuschko.docker-remote-api' version '6.7.0'
     id 'java'
 }
+
+import com.bmuschko.gradle.docker.tasks.container.*
+import com.bmuschko.gradle.docker.tasks.image.*
 
 group = 'com.arnoldgalovics.blog'
 version = '0.0.1-SNAPSHOT'
@@ -32,4 +36,37 @@ shadowJar {
     manifest {
         attributes 'Main-Class': 'io.redskap.lambda.runtime.sample.NativeDynamoDBApp'
     }
+}
+
+task buildNativeImage(type: DockerBuildImage) {
+    inputDir = project.rootDir
+    images.add('aws-lambda-java-dynamodb-native')
+}
+
+task createContainer(type: DockerCreateContainer) {
+    dependsOn buildNativeImage
+    targetImageId buildNativeImage.getImageId()
+    hostConfig.autoRemove = true
+    tty = true
+}
+
+task startContainer(type: DockerStartContainer) {
+    dependsOn createContainer
+    targetContainerId createContainer.getContainerId()
+}
+
+task copyNativePackageFromContainer(type: DockerCopyFileFromContainer) {
+    dependsOn startContainer
+    targetContainerId createContainer.getContainerId()
+    hostPath = "${project.buildDir}/function.zip"
+    remotePath = '/home/application/function.zip'
+}
+
+task stopNativeContainer(type: DockerStopContainer) {
+    dependsOn copyNativePackageFromContainer
+    targetContainerId createContainer.getContainerId()
+}
+
+task buildNative() {
+    dependsOn stopNativeContainer
 }

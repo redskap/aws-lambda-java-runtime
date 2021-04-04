@@ -1,6 +1,6 @@
 [
   {
-    "name": "com.arnoldgalovics.blog.app.TestRequest",
+    "name": "io.redskap.lambda.runtime.sample.TestRequest",
     "allDeclaredFields": true,
     "allDeclaredConstructors": true,
     "allDeclaredMethods": true,

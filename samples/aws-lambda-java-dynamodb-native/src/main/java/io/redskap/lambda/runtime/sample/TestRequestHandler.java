@@ -1,4 +1,4 @@
-package com.arnoldgalovics.blog.app;
+package io.redskap.lambda.runtime.sample;
 
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;

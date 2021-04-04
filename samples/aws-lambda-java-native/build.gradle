@@ -3,7 +3,7 @@ plugins {
     id 'java'
 }
 
-group = 'com.arnoldgalovics.blog'
+group = 'io.redskap'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
@@ -16,23 +16,9 @@ repositories {
 
 dependencies {
     implementation 'io.redskap:aws-lambda-java-runtime:0.0.1-SNAPSHOT'
-    testImplementation group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.988'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-    implementation group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.991'
-//    implementation 'commons-logging:commons-logging-api:1.1'
-//    implementation group: 'com.amazonaws', name: 'aws-lambda-java-log4j', version: '1.0.1'
-//    implementation group: 'org.slf4j', name: 'log4j-over-slf4j', version: '1.7.30'
-    // https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j
-    implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.30'
-    // https://mvnrepository.com/artifact/io.symphonia/lambda-logging
-    implementation group: 'io.symphonia', name: 'lambda-logging', version: '1.0.3'
-
-
-
-
-
-
 }
 
 test {
@@ -41,6 +27,6 @@ test {
 
 shadowJar {
     manifest {
-        attributes 'Main-Class': 'com.arnoldgalovics.blog.app.JavaApp'
+        attributes 'Main-Class': 'io.redskap.lambda.runtime.sample.NativeApp'
     }
 }

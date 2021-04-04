@@ -1,4 +1,4 @@
-package com.arnoldgalovics.blog.app;
+package io.redskap.lambda.runtime.sample;
 
 public class TestRequest {
     private String name;

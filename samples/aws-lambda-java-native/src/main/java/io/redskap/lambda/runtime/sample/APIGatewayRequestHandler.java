@@ -1,4 +1,4 @@
-package com.arnoldgalovics.blog.app;
+package io.redskap.lambda.runtime.sample;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;

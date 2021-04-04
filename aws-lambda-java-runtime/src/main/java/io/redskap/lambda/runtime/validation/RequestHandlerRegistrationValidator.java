@@ -6,8 +6,7 @@ import io.redskap.lambda.runtime.RequestHandlerRegistration;
 import io.redskap.lambda.runtime.exception.InitializationException;
 import io.redskap.lambda.runtime.exception.InvalidRequestHandlerRegistrationException;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class RequestHandlerRegistrationValidator {
     private static final Set<Class<?>> SUPPORTED_CLASSES = new HashSet<>();
@@ -16,6 +15,16 @@ public class RequestHandlerRegistrationValidator {
         SUPPORTED_CLASSES.add(String.class);
         SUPPORTED_CLASSES.add(APIGatewayProxyRequestEvent.class);
         SUPPORTED_CLASSES.add(APIGatewayProxyResponseEvent.class);
+    }
+
+    private final Collection<Class<?>> additionalClasses;
+
+    public RequestHandlerRegistrationValidator() {
+        this(Collections.emptyList());
+    }
+
+    public RequestHandlerRegistrationValidator(Collection<Class<?>> additionalClasses) {
+        this.additionalClasses = additionalClasses;
     }
 
     public <I, O> void validate(RequestHandlerRegistration<I, O> registration) {
@@ -30,11 +39,13 @@ public class RequestHandlerRegistrationValidator {
     }
 
     protected <I, O> void validateRegistrationTypes(RequestHandlerRegistration<I, O> registration) {
-        if (!SUPPORTED_CLASSES.contains(registration.getRequestType())) {
-            throw new InvalidRequestHandlerRegistrationException("Request type " + registration.getRequestType().getName() + " is not supported");
+        Class<I> requestType = registration.getRequestType();
+        if (!SUPPORTED_CLASSES.contains(requestType) && !additionalClasses.contains(requestType)) {
+            throw new InvalidRequestHandlerRegistrationException("Request type " + requestType.getName() + " is not supported");
         }
-        if (!SUPPORTED_CLASSES.contains(registration.getResponseType())) {
-            throw new InvalidRequestHandlerRegistrationException("Response type " + registration.getRequestType().getName() + " is not supported");
+        Class<O> responseType = registration.getResponseType();
+        if (!SUPPORTED_CLASSES.contains(responseType) && !additionalClasses.contains(responseType)) {
+            throw new InvalidRequestHandlerRegistrationException("Response type " + responseType.getName() + " is not supported");
         }
     }
 }

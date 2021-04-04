@@ -24,4 +24,4 @@ RUN /usr/lib/graalvm/bin/native-image --verbose -jar build/libs/${BUILT_JAR_NAME
 RUN mv ${BUILT_JAR_NAME} function
 RUN chmod 777 function
 RUN zip -j function.zip bootstrap function
-ENTRYPOINT ["/home/application/function"]
+ENTRYPOINT ["bash"]

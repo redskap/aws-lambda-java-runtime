@@ -1,0 +1,4 @@
+rootProject.name = 'aws-lambda-java-runtime'
+include 'aws-lambda-java-runtime'
+include ':samples:aws-lambda-java-native'
+include ':samples:aws-lambda-java-dynamodb-native'

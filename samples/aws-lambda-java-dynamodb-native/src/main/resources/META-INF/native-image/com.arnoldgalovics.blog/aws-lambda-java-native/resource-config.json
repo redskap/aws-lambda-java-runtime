@@ -1,0 +1,18 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "META-INF/services/.*"
+      },
+      {
+        "pattern": "com/amazonaws/partitions/endpoints.json"
+      },
+      {
+        "pattern": "com/amazonaws/internal/config/awssdk_config_default.json"
+      },
+      {
+        "pattern": "com/amazonaws/sdk/versionInfo.properties"
+      }
+    ]
+  }
+}

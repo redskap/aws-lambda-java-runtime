@@ -1,0 +1,95 @@
+plugins {
+    id 'java-library'
+    id 'maven'
+}
+
+group = 'io.redskap'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api 'com.google.code.gson:gson:2.8.6'
+    api 'com.amazonaws:aws-lambda-java-core:1.2.1'
+    api 'com.amazonaws:aws-lambda-java-events:3.8.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+//<editor-fold desc="Uploading to central">
+apply plugin: 'signing'
+
+task javadocJar(type: Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+if (project.hasProperty('signing.keyId')) {
+    signing {
+        sign configurations.archives
+    }
+}
+
+if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name 'AWS Lambda Java Runtime'
+                    packaging 'jar'
+                    description 'AWS Lambda custom runtime in Java'
+                    url 'https://github.com/redskap/aws-lambda-java-runtime'
+
+                    scm {
+                        connection 'scm:git:git://github.com/redskap/aws-lambda-java-runtime.git'
+                        developerConnection 'scm:git:ssh://github.com:redskap/aws-lambda-java-runtime.git'
+                        url 'https://github.com/redskap/aws-lambda-java-runtime'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'galovics'
+                            name 'Arnold Galovics'
+                            email 'info@arnoldgalovics.com'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+//</editor-fold>

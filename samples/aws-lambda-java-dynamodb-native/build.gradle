@@ -13,13 +13,10 @@ sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
-    maven {
-        url 'https://oss.sonatype.org/content/repositories/snapshots/'
-    }
 }
 
 dependencies {
-    implementation 'io.redskap:aws-lambda-java-runtime:0.0.1-SNAPSHOT'
+    implementation 'io.redskap:aws-lambda-java-runtime:0.0.1'
     implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.11.991'
     implementation 'org.slf4j:jcl-over-slf4j:1.7.30'
     implementation 'io.symphonia:lambda-logging:1.0.3'

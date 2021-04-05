@@ -13,13 +13,10 @@ sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
-    maven {
-        url 'https://oss.sonatype.org/content/repositories/snapshots/'
-    }
 }
 
 dependencies {
-    implementation 'io.redskap:aws-lambda-java-runtime:0.0.1-SNAPSHOT'
+    implementation 'io.redskap:aws-lambda-java-runtime:0.0.1'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'

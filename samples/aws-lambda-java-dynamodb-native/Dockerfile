@@ -18,7 +18,7 @@ CMD ["/usr/lib/graalvm/bin/native-image"]
 FROM graalvm
 COPY --from=builder /home/application/ /home/application/
 WORKDIR /home/application
-ENV BUILT_JAR_NAME=aws-lambda-java-native-0.0.1-SNAPSHOT-all
+ENV BUILT_JAR_NAME=aws-lambda-java-dynamodb-native-0.0.1-SNAPSHOT-all
 RUN /usr/lib/graalvm/bin/gu install native-image
 RUN /usr/lib/graalvm/bin/native-image --verbose -jar build/libs/${BUILT_JAR_NAME}.jar
 RUN mv ${BUILT_JAR_NAME} function

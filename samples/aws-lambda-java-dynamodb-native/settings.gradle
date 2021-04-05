@@ -1,1 +1,1 @@
-rootProject.name = 'aws-lambda-java-native'
+rootProject.name = 'aws-lambda-java-dynamodb-native'

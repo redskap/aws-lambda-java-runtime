@@ -7,6 +7,11 @@ a foundation for creating GraalVM native images.
 
 The full documentation can be found [here](https://redskap.github.io/aws-lambda-java-runtime/).
 
+# Samples
+There are 2 sample applications available at the moment:
+* Simple lambda function with returning the request body in the response (samples/aws-lambda-java-native)
+* Lambda function with writing into DynamoDB (samples/aws-lambda-java-dynamodb-native)
+
 # Building the runtime
 ```bash
 $ ./gradlew clean build

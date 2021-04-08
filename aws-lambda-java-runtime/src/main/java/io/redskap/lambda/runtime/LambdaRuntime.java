@@ -4,6 +4,7 @@ import io.redskap.lambda.runtime.api.LambdaRuntimeHttpClient;
 import io.redskap.lambda.runtime.api.RuntimeInvocationHeaders;
 import io.redskap.lambda.runtime.exception.InitializationException;
 import io.redskap.lambda.runtime.http.HttpResponse;
+import io.redskap.lambda.runtime.internal.HandlerRegistrationResolver;
 import io.redskap.lambda.runtime.internal.RequestHandlerInvoker;
 import io.redskap.lambda.runtime.util.EnvironmentVariableResolver;
 import io.redskap.lambda.runtime.util.ReservedEnvironmentVariables;
@@ -14,21 +15,25 @@ import java.util.Collection;
 public class LambdaRuntime {
     private final Collection<RequestHandlerRegistration<?, ?>> handlerRegistrations;
     private final RequestHandlerRegistrationValidator registrationValidator;
+    private final HandlerRegistrationResolver handlerRegistrationResolver;
 
     public LambdaRuntime(Collection<RequestHandlerRegistration<?, ?>> handlerRegistrations) {
-        this(handlerRegistrations, new RequestHandlerRegistrationValidator());
+        this(handlerRegistrations, new RequestHandlerRegistrationValidator(), new HandlerRegistrationResolver());
     }
 
-    public LambdaRuntime(Collection<RequestHandlerRegistration<?, ?>> handlerRegistrations, RequestHandlerRegistrationValidator registrationValidator) {
+    public LambdaRuntime(Collection<RequestHandlerRegistration<?, ?>> handlerRegistrations, RequestHandlerRegistrationValidator registrationValidator,
+                         HandlerRegistrationResolver handlerRegistrationResolver) {
         this.handlerRegistrations = handlerRegistrations;
         this.registrationValidator = registrationValidator;
+        this.handlerRegistrationResolver = handlerRegistrationResolver;
     }
 
     public void run() {
         String runtimeApi = EnvironmentVariableResolver.resolve(ReservedEnvironmentVariables.AWS_LAMBDA_RUNTIME_API);
         LambdaRuntimeHttpClient runtimeHttpClient = new LambdaRuntimeHttpClient(runtimeApi);
         try {
-            RequestHandlerRegistration<?, ?> handlerRegistration = findRequestHandlerRegistration();
+            String handlerConfigurationValue = EnvironmentVariableResolver.resolve(ReservedEnvironmentVariables.HANDLER);
+            RequestHandlerRegistration<?, ?> handlerRegistration = handlerRegistrationResolver.resolve(handlerConfigurationValue, handlerRegistrations);
             registrationValidator.validate(handlerRegistration);
             while (true) {
                 HttpResponse event = runtimeHttpClient.nextInvocation();
@@ -48,28 +53,5 @@ public class LambdaRuntime {
             e.printStackTrace();
             runtimeHttpClient.initializationError("Initialization Error");
         }
-    }
-
-    private RequestHandlerRegistration<?, ?> findRequestHandlerRegistration() {
-        String handler = EnvironmentVariableResolver.resolve(ReservedEnvironmentVariables.HANDLER);
-        if (handler != null) {
-            String handlerClassName = parseHandlerClassName(handler);
-            if (handlerClassName != null) {
-                for (RequestHandlerRegistration<?, ?> registration : handlerRegistrations) {
-                    if (handlerClassName.equals(registration.getHandler().getClass().getName())) {
-                        return registration;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    protected String parseHandlerClassName(String handler) {
-        String[] splitHandler = handler.split("::");
-        if (splitHandler.length > 0) {
-            return splitHandler[0];
-        }
-        return null;
     }
 }
